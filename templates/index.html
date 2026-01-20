@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>House Price Prediction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 40px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0 15px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>House Price Prediction</h2>
+
+    <form method="POST">
+        <label>Overall Quality (1–10)</label>
+        <input type="number" name="OverallQual" min="1" max="10" required>
+
+        <label>Ground Living Area (sq ft)</label>
+        <input type="number" name="GrLivArea" required>
+
+        <label>Total Basement Area (sq ft)</label>
+        <input type="number" name="TotalBsmtSF" required>
+
+        <label>Garage Capacity (cars)</label>
+        <input type="number" name="GarageCars" min="0" required>
+
+        <label>Number of Full Bathrooms</label>
+        <input type="number" name="FullBath" min="0" required>
+
+        <label>Neighborhood</label>
+        <input type="text" name="Neighborhood" placeholder="e.g. NAmes" required>
+
+        <button type="submit">Predict Price</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result">
+        <strong>Predicted House Price:</strong><br>
+        ${{ "{:,.2f}".format(prediction) }}
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
