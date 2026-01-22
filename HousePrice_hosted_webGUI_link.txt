@@ -1,0 +1,6 @@
+Name: Ikechukwu Anachebe
+Matric Number: 23CD034305
+Machine Learning Algorithm Used: Random Forest Regressor
+Model Persistence Method Used: Joblib
+Live URL: https://houseprice-project-ikechukwu-23cd034305-1.onrender.com
+GitHub Repository Link: https://github.com/Alexdev68/HousePrice_Project_Ikechukwu_23CD034305/blob/master/requirements.txt

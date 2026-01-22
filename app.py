@@ -5,27 +5,27 @@ from flask import Flask, render_template, request
 import joblib
 import pandas as pd
 
-app = Flask(__name__)
+web_app = Flask(__name__)
 
 # -------------------------------------------------
 # Load trained model (NO retraining)
 # -------------------------------------------------
-model = joblib.load("model/house_price_model.pkl")
+price_model = joblib.load("model/house_price_model.pkl")
 
 # Feature columns used during training
 # NOTE: Must match model training exactly
-feature_columns = model.feature_names_in_
+trained_features = price_model.feature_names_in_
 
 # -------------------------------------------------
 # Routes
 # -------------------------------------------------
-@app.route("/", methods=["GET", "POST"])
-def home():
-    prediction = None
+@web_app.route("/", methods=["GET", "POST"])
+def index():
+    estimated_price = None
 
     if request.method == "POST":
         # Collect user input
-        input_data = {
+        user_features = {
             "OverallQual": int(request.form["OverallQual"]),
             "GrLivArea": float(request.form["GrLivArea"]),
             "TotalBsmtSF": float(request.form["TotalBsmtSF"]),
@@ -35,22 +35,22 @@ def home():
         }
 
         # Convert input to DataFrame
-        input_df = pd.DataFrame([input_data])
+        features_df = pd.DataFrame([user_features])
 
         # Encode categorical variable (Neighborhood)
-        input_df = pd.get_dummies(input_df, columns=["Neighborhood"])
+        features_df = pd.get_dummies(features_df, columns=["Neighborhood"])
 
         # Align columns with training data
-        input_df = input_df.reindex(columns=feature_columns, fill_value=0)
+        features_df = features_df.reindex(columns=trained_features, fill_value=0)
 
         # Make prediction
-        prediction = model.predict(input_df)[0]
+        estimated_price = price_model.predict(features_df)[0]
 
-    return render_template("index.html", prediction=prediction)
+    return render_template("index.html", prediction=estimated_price)
 
 
 # -------------------------------------------------
 # Run App
 # -------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    web_app.run(debug=True)
