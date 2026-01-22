@@ -1,30 +1,21 @@
-# app.py
-# House Price Prediction Web Application (Flask)
-
 from flask import Flask, render_template, request
 import joblib
 import pandas as pd
+import os
 
 web_app = Flask(__name__)
 
-# -------------------------------------------------
-# Load trained model (NO retraining)
-# -------------------------------------------------
+# Load trained model
 price_model = joblib.load("model/house_price_model.pkl")
 
 # Feature columns used during training
-# NOTE: Must match model training exactly
 trained_features = price_model.feature_names_in_
 
-# -------------------------------------------------
-# Routes
-# -------------------------------------------------
 @web_app.route("/", methods=["GET", "POST"])
 def index():
     estimated_price = None
 
     if request.method == "POST":
-        # Collect user input
         user_features = {
             "OverallQual": int(request.form["OverallQual"]),
             "GrLivArea": float(request.form["GrLivArea"]),
@@ -34,23 +25,16 @@ def index():
             "Neighborhood": request.form["Neighborhood"]
         }
 
-        # Convert input to DataFrame
         features_df = pd.DataFrame([user_features])
-
-        # Encode categorical variable (Neighborhood)
         features_df = pd.get_dummies(features_df, columns=["Neighborhood"])
-
-        # Align columns with training data
         features_df = features_df.reindex(columns=trained_features, fill_value=0)
 
-        # Make prediction
         estimated_price = price_model.predict(features_df)[0]
 
     return render_template("index.html", prediction=estimated_price)
 
 
-# -------------------------------------------------
-# Run App
-# -------------------------------------------------
+# Run App (Render Compatible)
 if __name__ == "__main__":
-    web_app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    web_app.run(host="0.0.0.0", port=port, debug=False)
